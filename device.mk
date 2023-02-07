@@ -6,3 +6,8 @@
 #
 
 LOCAL_PATH := device/acer/AcerOne8T482L
+
+# fastboot/d hal
+PRODUCT_PACKAGES += \
+    android.hardware.fastboot@1.0-impl-mock \
+    fastbootd
