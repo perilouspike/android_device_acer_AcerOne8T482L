@@ -18,7 +18,6 @@
 /metadata                 ext4     /dev/block/platform/bootdevice/by-name/md_udc            flags=display="metadata"
 /cache                    ext4     /dev/block/platform/bootdevice/by-name/cache             flags=display="cache";wipeingui
 
-
 # IMEI and modem related
 /mnt/vendor/protect_f     ext4     /dev/block/platform/bootdevice/by-name/protect1          flags=display="protect_f";backup=1
 /mnt/vendor/protect_s     ext4     /dev/block/platform/bootdevice/by-name/protect2          flags=display="protect_s";backup=1

@@ -1,11 +1,20 @@
-#
 # Copyright (C) 2023 The Android Open Source Project
+# Copyright (C) 2023 The TWRP Open Source Project
 # Copyright (C) 2023 SebaUbuntu's TWRP device tree generator
 #
-# SPDX-License-Identifier: Apache-2.0
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
-DEVICE_PATH := device/acer/AcerOne8T482L
+DEVICE_PATH := device/acer/T482L
 
 # For building with minimal manifest
 ALLOW_MISSING_DEPENDENCIES := true
@@ -26,14 +35,14 @@ TARGET_2ND_CPU_VARIANT := generic
 TARGET_2ND_CPU_VARIANT_RUNTIME := cortex-a53
 
 # APEX
-DEXPREOPT_GENERATE_APEX_IMAGE := true
+#DEXPREOPT_GENERATE_APEX_IMAGE := true
 
 # Bootloader
 TARGET_BOOTLOADER_BOARD_NAME := tb8766p1_64_bsp
 TARGET_NO_BOOTLOADER := true
 
 # Display
-TARGET_SCREEN_DENSITY := 213
+#TARGET_SCREEN_DENSITY := 213
 
 # Kernel
 TARGET_KERNEL_ARCH := $(TARGET_ARCH)
@@ -47,10 +56,6 @@ BOARD_MKBOOTIMG_ARGS += --header_version $(BOARD_BOOTIMG_HEADER_VERSION)
 BOARD_MKBOOTIMG_ARGS += --ramdisk_offset $(BOARD_RAMDISK_OFFSET)
 BOARD_MKBOOTIMG_ARGS += --tags_offset $(BOARD_KERNEL_TAGS_OFFSET)
 BOARD_KERNEL_IMAGE_NAME := Image
-BOARD_INCLUDE_DTB_IN_BOOTIMG := true
-BOARD_KERNEL_SEPARATED_DTBO := true
-TARGET_KERNEL_CONFIG := AcerOne8T482L_defconfig
-TARGET_KERNEL_SOURCE := kernel/acer/AcerOne8T482L
 
 # Kernel - prebuilt
 TARGET_FORCE_PREBUILT_KERNEL := true
@@ -58,6 +63,7 @@ ifeq ($(TARGET_FORCE_PREBUILT_KERNEL),true)
 TARGET_PREBUILT_KERNEL := $(DEVICE_PATH)/prebuilt/kernel
 TARGET_PREBUILT_DTB := $(DEVICE_PATH)/prebuilt/dtb.img
 BOARD_MKBOOTIMG_ARGS += --dtb $(TARGET_PREBUILT_DTB)
+BOARD_INCLUDE_RECOVERY_DTBO := true
 BOARD_INCLUDE_DTB_IN_BOOTIMG := 
 BOARD_PREBUILT_DTBOIMAGE := $(DEVICE_PATH)/prebuilt/dtbo.img
 BOARD_KERNEL_SEPARATED_DTBO := 
@@ -81,16 +87,21 @@ BOARD_ACER_DYNAMIC_PARTITIONS_SIZE := 9122611200 # TODO: Fix hardcoded value
 TARGET_BOARD_PLATFORM := mt6761
 
 # Recovery
-BOARD_INCLUDE_RECOVERY_DTBO := true
 TARGET_USERIMAGES_USE_EXT4 := true
 TARGET_USERIMAGES_USE_F2FS := true
+TARGET_SYSTEM_PROP := $(DEVICE_PATH)/system.prop
 TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/recovery/root/system/etc/recovery.fstab
+
+# System as root
+BOARD_BUILD_SYSTEM_ROOT_IMAGE := false
+BOARD_SUPPRESS_SECURE_ERASE := true
+BOARD_HAS_NO_SELECT_BUTTON := true
 
 # Verified Boot
 BOARD_AVB_ENABLE := true
 BOARD_AVB_MAKE_VBMETA_IMAGE_ARGS += --flags 3
-BOARD_AVB_RECOVERY_KEY_PATH := external/avb/test/data/testkey_rsa4096.pem
-BOARD_AVB_RECOVERY_ALGORITHM := SHA256_RSA4096
+BOARD_AVB_RECOVERY_KEY_PATH := external/avb/test/data/testkey_rsa2048.pem
+BOARD_AVB_RECOVERY_ALGORITHM := SHA256_RSA2048
 BOARD_AVB_RECOVERY_ROLLBACK_INDEX := 1
 BOARD_AVB_RECOVERY_ROLLBACK_INDEX_LOCATION := 1
 
@@ -101,21 +112,53 @@ BOOT_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)
 PLATFORM_VERSION := 99.87.36
 PLATFORM_VERSION_LAST_STABLE := $(PLATFORM_VERSION)
 
+# Crypto
+TW_INCLUDE_CRYPTO := true
+TW_INCLUDE_CRYPTO_FBE := true
+#TW_USE_FSCRYPT_POLICY := 1
+
+# Additional binaries & libraries needed for recovery
+TARGET_RECOVERY_DEVICE_MODULES += \
+    libkeymaster1 \
+    libkeymaster3device \
+    libpuresoftkeymasterdevice
+
+TW_RECOVERY_ADDITIONAL_RELINK_LIBRARY_FILES += \
+    $(TARGET_OUT_SHARED_LIBRARIES)/libkeymaster1.so \
+    $(TARGET_OUT_SHARED_LIBRARIES)/libkeymaster3device.so \
+    $(TARGET_OUT_SHARED_LIBRARIES)/libpuresoftkeymasterdevice.so
+
+# TWRP Configuration
+TW_THEME := portrait_hdpi
+TW_EXCLUDE_DEFAULT_USB_INIT := true
+RECOVERY_SDCARD_ON_DATA := true
+TW_NO_SCREEN_BLANK := true
+TW_MAX_BRIGHTNESS := 255
+TW_DEFAULT_BRIGHTNESS := 255
+TW_INPUT_BLACKLIST := "hbtp_vm"
+TW_USE_TOOLBOX := true
+TW_HAS_MTP := true
+TW_INCLUDE_FASTBOOTD := true
+TW_DEVICE_VERSION := perilouspike
+TARGET_USES_MKE2FS := true
+TW_INCLUDE_RESETPROP := true
+TW_LOAD_VENDOR_MODULES := true
+RECOVERY_TOUCHSCREEN_SWAP_XY := true
+RECOVERY_TOUCHSCREEN_FLIP_Y := true
+RECOVERY_TOUCHSCREEN_FLIP_X := true
+
+# Exclude
+TW_EXCLUDE_TWRP_APP := true
+TW_EXCLUDE_APEX := true
+TW_EXCLUDE_SUPERSU := true
+
+# Logcat
+TWRP_INCLUDE_LOGCAT := true
+TARGET_USES_LOGD := true
+
 # cure for "ELF binaries" problems
 BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES := true
 
 # deal with "error: overriding commands for target" problems
 BUILD_BROKEN_DUP_RULES := true
 BUILD_BROKEN_MISSING_REQUIRED_MODULES := true
-
-# TWRP Configuration
-TW_THEME := portrait_hdpi
-TW_EXTRA_LANGUAGES := true
-RECOVERY_SDCARD_ON_DATA := true
-TW_SCREEN_BLANK_ON_BOOT := true
-TW_INPUT_BLACKLIST := "hbtp_vm"
-TW_USE_TOOLBOX := true
-TW_INCLUDE_FASTBOOTD := true
-RECOVERY_TOUCHSCREEN_SWAP_XY := true
-RECOVERY_TOUCHSCREEN_FLIP_Y := true
-RECOVERY_TOUCHSCREEN_FLIP_X := true
