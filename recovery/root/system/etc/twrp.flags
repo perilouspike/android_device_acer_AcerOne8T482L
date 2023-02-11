@@ -5,9 +5,9 @@
 # <mount_point>  <fstype>  <device>        <device2>                  <flags>
 
 # Vbmeta related partitions.
-/vbmeta_vendor            emmc     /dev/block/platform/bootdevice/by-name/vbmeta_vendor     flags=display="vbmeta_vendor";flashimg=1
-/vbmeta_system            emmc     /dev/block/platform/bootdevice/by-name/vbmeta_system     flags=display="vbmeta_system";flashimg=1
-/vbmeta                   emmc     /dev/block/platform/bootdevice/by-name/vbmeta            flags=display="vbmeta";flashimg=1
+/vbmeta_vendor            emmc     /dev/block/platform/bootdevice/by-name/vbmeta_vendor     flags=display="vbmeta_vendor";backup=1;flashimg=1
+/vbmeta_system            emmc     /dev/block/platform/bootdevice/by-name/vbmeta_system     flags=display="vbmeta_system";flashimg=1;backup=1
+/vbmeta                   emmc     /dev/block/platform/bootdevice/by-name/vbmeta            flags=display="vbmeta";flashimg=1;backup=1
 
 # Other partitions.
 /mnt/vendor/persist       ext4     /dev/block/platform/bootdevice/by-name/persist           flags=display="persist";backup=1
