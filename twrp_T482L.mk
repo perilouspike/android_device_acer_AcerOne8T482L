@@ -24,7 +24,7 @@ $(call inherit-product, vendor/twrp/config/common.mk)
 # Inherit from AcerOne8T482L device
 $(call inherit-product, device/acer/T482L/device.mk)
 
-PRODUCT_DEVICE := AcerOne8T482L
+PRODUCT_DEVICE := T482L
 PRODUCT_NAME := twrp_T482L
 PRODUCT_BRAND := Acer
 PRODUCT_MODEL := Acer One 8 T4-82L
