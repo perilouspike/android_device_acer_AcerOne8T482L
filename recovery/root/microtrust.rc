@@ -1,5 +1,5 @@
 # For MTK DRM integration:
-service teei_daemon /vendor/bin/teei_daemon \
+service teei_daemon /system/bin/teei_daemon \
     -r 020b0000000000000000000000000000 \
     -r 020f0000000000000000000000000000 \
     -r 06090000000000000000000000000000 \
@@ -127,6 +127,8 @@ on property:vold.decrypt=trigger_restart_framework
     mkdir /data/vendor/thh/tee_0E
     mkdir /data/vendor/thh/tee_0F
     mkdir /data/vendor/thh/ta
+    mkdir /data/vendor/key_provisioning
+    mkdir /data/vendor/thh/tee_log
     chmod 0755 /data/vendor/thh
     chown system system /data/vendor/thh
     chmod 0755 /data/vendor/thh/tee_00
@@ -170,8 +172,10 @@ on property:vold.decrypt=trigger_restart_framework
     chown system system /data/vendor/thh/ta
     chmod 0755 /data/vendor/thh/system
     chown system system /data/vendor/thh/system
+    chmod 0771 /data/vendor/key_provisioning
+    chown system system /data/vendor/key_provisioning
     restorecon_recursive /data/vendor/thh
-    write /proc/bootprof "start teei cfg end (on trigger_restart_framework)"
+    write /proc/bootprof "start teei cfg end (on vold.decrypt=trigger_restart_framework)"
 
 on post-fs
     # Set /mnt/vendor/persist/rpmb
@@ -222,3 +226,6 @@ on fs
 
 on property:vendor.crypto.fake_encrypt=1 && property:vold.post_fs_data_done=1
     setprop vendor.soter.teei.crypto.state unencrypted
+
+on post-fs-data
+	setprop vendor.soter.teei.logini "start"

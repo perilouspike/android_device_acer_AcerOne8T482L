@@ -4,6 +4,7 @@ on post-fs
     start boot-hal-1-1
 
     # Support A/B feature for emmc boot region
+    wait /dev/block/mmcblk0boot0 2
     symlink /dev/block/sda /dev/block/mmcblk0boot0
     symlink /dev/block/sdb /dev/block/mmcblk0boot1
     symlink /dev/block/mmcblk0boot0 /dev/block/platform/bootdevice/by-name/preloader_a
@@ -16,8 +17,9 @@ on post-fs
 
 on init
     export LD_LIBRARY_PATH /system/lib64:/vendor/lib64:/vendor/lib64/hw
+    
     # Create a more standard /dev/block layout for our scripts
-    symlink /dev/block/platform/bootdevice /dev/block/bootdevice
+    #symlink /dev/block/platform/bootdevice /dev/block/bootdevice
 
     mkdir /mnt/vendor/persist 0700 root root
     mount ext4 /dev/block/platform/bootdevice/by-name/persist /mnt/vendor/persist
@@ -26,6 +28,7 @@ on init
     setprop sys.usb.ffs.aio_compat 1
 
 on fs
+    on property:ro.crypto.state=encrypted && property:ro.crypto.type=file
     install_keyring
     
 service mtk.plpath.utils.link /system/bin/mtk_plpath_utils
@@ -43,6 +46,7 @@ service keystore_auth /system/bin/keystore_auth
     disabled
     seclabel u:r:recovery:s0
 
+# keystore is started and stopped on demand by TWRP
 service keystore /system/bin/keystore /tmp/misc/keystore
     user root
     group root drmrpc readproc log
@@ -53,6 +57,7 @@ service gatekeeper-1-0 /system/bin/android.hardware.gatekeeper@1.0-service
     user root
     group root
     disabled
+    oneshot
     seclabel u:r:recovery:s0
         
 service keymaster-3-0 /system/bin/android.hardware.keymaster@3.0-service
