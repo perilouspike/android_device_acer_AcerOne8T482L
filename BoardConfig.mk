@@ -18,6 +18,9 @@ DEVICE_PATH := device/acer/T482L
 
 # For building with minimal manifest
 ALLOW_MISSING_DEPENDENCIES := true
+BUILD_BROKEN_DUP_RULES := true
+BUILD_BROKEN_MISSING_REQUIRED_MODULES := true
+BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES := true
 
 # Architecture
 TARGET_ARCH := arm64
@@ -33,9 +36,6 @@ TARGET_2ND_CPU_ABI := armeabi-v7a
 TARGET_2ND_CPU_ABI2 := armeabi
 TARGET_2ND_CPU_VARIANT := generic
 TARGET_2ND_CPU_VARIANT_RUNTIME := cortex-a53
-
-# APEX
-DEXPREOPT_GENERATE_APEX_IMAGE := true
 
 # Bootloader
 TARGET_BOOTLOADER_BOARD_NAME := tb8766p1_64_bsp
@@ -132,26 +132,31 @@ PLATFORM_VERSION_LAST_STABLE := $(PLATFORM_VERSION)
 
 # Crypto
 TW_INCLUDE_CRYPTO := true
-TW_INCLUDE_CRYPTO_FBE := true
+#TW_INCLUDE_CRYPTO_FBE := true
 BOARD_USES_METADATA_PARTITION := true
-#TW_USE_FSCRYPT_POLICY := 1
+TW_USE_FSCRYPT_POLICY := 1
 
 # Additional binaries & libraries needed for recovery
 TARGET_RECOVERY_DEVICE_MODULES += \
-    libkeymaster1 \
+    libkeymaster4support \
     libkeymaster3device \
-    libpuresoftkeymasterdevice
+    libpuresoftkeymasterdevice \
+    ashmemd_aidl_interface-cpp \
+    libashmemd_client
 
 TW_RECOVERY_ADDITIONAL_RELINK_LIBRARY_FILES += \
-    $(TARGET_OUT_SHARED_LIBRARIES)/libkeymaster1.so \
+    $(TARGET_OUT_SHARED_LIBRARIES)/libkeymaster4support.so \
     $(TARGET_OUT_SHARED_LIBRARIES)/libkeymaster3device.so \
-    $(TARGET_OUT_SHARED_LIBRARIES)/libpuresoftkeymasterdevice.so
+    $(TARGET_OUT_SHARED_LIBRARIES)/libpuresoftkeymasterdevice.so \
+    $(TARGET_OUT_SHARED_LIBRARIES)/ashmemd_aidl_interface-cpp.so \
+    $(TARGET_OUT_SHARED_LIBRARIES)/libashmemd_client.so
 
 # TWRP Configuration
 TW_THEME := portrait_hdpi
 TW_EXCLUDE_DEFAULT_USB_INIT := true
 RECOVERY_SDCARD_ON_DATA := true
-TW_NO_SCREEN_BLANK := true
+TW_SCREEN_BLANK_ON_BOOT := true
+#TW_NO_SCREEN_BLANK := true
 TW_MAX_BRIGHTNESS := 255
 TW_DEFAULT_BRIGHTNESS := 255
 TW_INPUT_BLACKLIST := "hbtp_vm"
@@ -173,10 +178,3 @@ TW_EXCLUDE_SUPERSU := true
 # Logcat
 TWRP_INCLUDE_LOGCAT := true
 TARGET_USES_LOGD := true
-
-# cure for "ELF binaries" problems
-BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES := true
-
-# deal with "error: overriding commands for target" problems
-BUILD_BROKEN_DUP_RULES := true
-BUILD_BROKEN_MISSING_REQUIRED_MODULES := true
