@@ -1,4 +1,4 @@
-ro.adb.secure=0
+#ro.adb.secure=0
 #ro.postinstall.fstab.prefix=/system
 ro.hardware=mt8766
 ro.vendor.mediatek.platform=MT6761
