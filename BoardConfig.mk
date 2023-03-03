@@ -159,7 +159,7 @@ RECOVERY_SDCARD_ON_DATA := true
 TW_NO_SCREEN_BLANK := true
 TW_MAX_BRIGHTNESS := 255
 TW_DEFAULT_BRIGHTNESS := 255
-TW_INPUT_BLACKLIST := "hbtp_vm"
+#TW_INPUT_BLACKLIST := "hbtp_vm"
 TW_USE_TOOLBOX := true
 TW_HAS_MTP := true
 #TW_INCLUDE_FASTBOOTD := true
@@ -180,5 +180,5 @@ TWRP_INCLUDE_LOGCAT := true
 TARGET_USES_LOGD := true
 
 # Use props from system instead from recovery build
-TW_OVERRIDE_SYSTEM_PROPS := \
+#TW_OVERRIDE_SYSTEM_PROPS := \
     "ro.build.product;ro.build.fingerprint;ro.build.version.incremental;ro.product.device=ro.product.system.device;ro.product.model=ro.product.system.model;ro.product.name=ro.product.system.name"
