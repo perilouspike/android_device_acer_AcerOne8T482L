@@ -15,7 +15,7 @@
 # limitations under the License.
 
 PRODUCT_MAKEFILES := \
-    $(LOCAL_DIR)/twrp_T482L.mk
+    $(LOCAL_DIR)/omni_T482L.mk
 
 COMMON_LUNCH_CHOICES := \
-    twrp_T482L-eng    
+    omni_T482L-eng    
